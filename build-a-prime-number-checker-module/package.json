@@ -1,0 +1,10 @@
+{
+  "name": "prime-checker",
+  "version": "1.0.0",
+  "description": "Module de verification des nombres premiers",
+  "keywords": ["prime", "number", "checker"],
+  "license": "MIT",
+  "author": "Camper Bot",
+  "type": "commonjs",
+  "main": "index.js"
+}

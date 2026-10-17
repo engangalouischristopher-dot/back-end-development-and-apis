@@ -1,21 +1,43 @@
-import express from "express";
-import cors from "cors";
-
+const express = require('express');
 const app = express();
 
-app.use(cors({ optionsSuccessStatus: 200 }));
+// enable CORS for FCC testing
+const cors = require('cors');
+app.use(cors({optionsSuccessStatus: 200}));
+app.use(express.static('public'));
 
-app.use(express.static("public"));
-
-app.get("/", (_req, res) => {
-  res.sendFile(import.meta.dirname + "/views/index.html");
+app.get("/", function (req, res) {
+  res.sendFile(__dirname + '/views/index.html');
 });
 
-// Do not change code above this line
+// TA LOGIQUE - Le microservice
+app.get("/api/:date?", function (req, res) {
+  let dateParam = req.params.date;
+  let date;
 
-// Do not change code below this line
+  // Si pas de date -> date actuelle
+  if (!dateParam) {
+    date = new Date();
+  } else {
+    // Si c'est que des chiffres -> c'est un timestamp unix
+    if (!isNaN(dateParam)) {
+      date = new Date(parseInt(dateParam));
+    } else {
+      date = new Date(dateParam);
+    }
+  }
 
-const PORT = 8000;
-const listener = app.listen(PORT, function () {
-  console.log("Your app is listening on port " + listener.address().port);
+  // Vérif si date invalide
+  if (date.toString() === "Invalid Date") {
+    return res.json({ error: "Invalid Date" });
+  }
+
+  return res.json({
+    unix: date.getTime(),
+    utc: date.toUTCString()
+  });
+});
+
+const listener = app.listen(process.env.PORT || 3000, function () {
+  console.log('Your app is listening on port ' + listener.address().port);
 });
